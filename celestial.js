@@ -149,7 +149,7 @@ document.addEventListener('keydown', (e) => e.key === 'ArrowLeft' && prevSlide()
 
 dotContainer.addEventListener('click', (e) => {
     if(e.target.classList.contains('dot')){
-        slideNumber = e.target.dataset.slide;
+        slideNumber = Number(e.target.dataset.slide);
         goToSlide(slideNumber);
     }
 });
