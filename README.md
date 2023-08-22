@@ -1,2 +1,3 @@
 # Celestial
 Just a little project of a web page template to go to the moon .... 
+(currently having a layout bug when sceen touch is enabled)
