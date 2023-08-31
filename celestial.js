@@ -1,9 +1,15 @@
 'use strict';
 
+import * as THREE from '/node_modules/three/build/three.module.js';
+
 const header = document.querySelector('.header');
 const menuBtn = document.querySelector('.menu-btn');
 const nav = document.querySelector('.nav');
 const nav_links = document.querySelector('.nav_links');
+const moonDiv = document.querySelector('.moonDiv');
+const messageDiv = document.querySelector('.messageDiv');
+const headline = document.querySelector('.headline');
+const mainMessage = document.querySelector('.mainMessage');
 const tickets_tab = document.querySelector('.tickets_tab');
 const slides = document.querySelectorAll('.slide');
 const leftSliderBtn = document.querySelector('.sliderBtn-left');
@@ -14,7 +20,7 @@ const overlay = document.querySelector('.overlay');
 const popup = document.querySelector('.popup');
 const closePopupBtn = document.querySelector('.closePopupBtn');
 const sections = document.querySelectorAll('.section');
-const ticket_tabs_contaner = document.querySelector('.ticketsContent')
+const ticket_tabs_container = document.querySelector('.ticketsContent')
 const ticket_tabs = document.querySelectorAll('.tickets_tab');
 const lazy_imgs = document.querySelectorAll('img[data-src]');
 const footer_items = document.querySelector('.footer_items');
@@ -180,7 +186,7 @@ sections.forEach(section => {
 
 let isFlipped = false;
 
-ticket_tabs_contaner.addEventListener('click', (e) => {
+ticket_tabs_container.addEventListener('click', (e) => {
 
     if(!e.target.classList.contains('tickets_tab-btn')){
         const tab = e.target.closest('.tickets_tab');
@@ -257,3 +263,123 @@ const bringImgObserver = new IntersectionObserver(bringImg, {
 });
 
 initialChildOrder.forEach(child => bringImgObserver.observe(child));
+
+// Adding 3d rotating moon via three.js library
+
+//Scene
+const scene = new THREE.Scene();
+
+// //Moon
+const moonTexture = new THREE.TextureLoader().load('imgs/3Dmoon.jpg');
+let moon = new THREE.Mesh(
+  new THREE.SphereGeometry(7, 64, 64),
+  new THREE.MeshStandardMaterial({
+    map: moonTexture
+  })
+);
+
+scene.add(moon);
+
+//sizes
+const sizes = {
+  width: moonDiv.offsetWidth,
+  height: moonDiv.offsetHeight
+};
+
+//Light
+const light = new THREE.PointLight(0xffffff, 1000, 100);
+light.position.set(5, 5, 40);
+scene.add(light);
+
+//Camera
+const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height);
+camera.position.z = 20;
+scene.add(camera);
+
+//Renderer
+const canvas = document.querySelector('.webgl');
+const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true});
+
+renderer.setSize(sizes.width, sizes.height);
+renderer.shadowMap.enabled = true;
+renderer.gammaOutput = true;
+renderer.render(scene, camera);
+
+window.addEventListener('resize', () =>{
+  //Update Camera
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
+  //Update Renderer
+  renderer.setSize(sizes.width, sizes.height);
+});
+
+const animate = () =>{
+  const rotationAxis = new THREE.Vector3(0.4, -1, 0).normalize(); 
+  const quaternion = new THREE.Quaternion();
+  quaternion.setFromAxisAngle(rotationAxis, 0.0005);
+  moon.quaternion.multiplyQuaternions(quaternion, moon.quaternion);
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(animate);
+};
+
+animate();
+
+//Change moon size depending on screen width
+
+const createNewMoon = function(diameter){
+    scene.remove(moon);
+    moon = new THREE.Mesh(
+        new THREE.SphereGeometry(diameter, 64, 64),
+        new THREE.MeshStandardMaterial({
+            map: moonTexture
+        })
+    );
+    scene.add(moon);
+}
+
+const moonSizes = new Map();
+moonSizes.set(87, 6).set(66, 5).set(62, 7).set(37, 6).set(31, 5);
+
+function checkMoon_size(media, diameter){
+    if(media.matches){
+        createNewMoon(diameter);
+    }
+    else{
+        return;
+    }
+};
+
+Array.from(moonSizes.keys()).forEach(key => {
+    const y = window.matchMedia(`(max-width: ${key}rem)`);
+    checkMoon_size(y, moonSizes.get(key)); //check if the width is matching the page width at initial page load
+    y.addEventListener('change', checkMoon_size.bind(this, y, moonSizes.get(key)));
+});
+
+function checkMoon_layout(media){
+    if(media.matches){
+        messageDiv.classList.remove('messageDiv');
+        messageDiv.classList.add('messageDiv-extended');
+        moonDiv.classList.remove('moonDiv');
+        moonDiv.classList.add('moonDiv-extended');
+        headline.classList.add('centerText');
+        mainMessage.classList.add('centerText');
+        sizes.width = canvas.parentElement.offsetWidth;
+        sizes.height = canvas.parentElement.offsetHeight;
+        createNewMoon(7);
+    }
+    else{
+        messageDiv.classList.remove('messageDiv-extended');
+        messageDiv.classList.add('messageDiv');
+        moonDiv.classList.remove('moonDiv-extended');
+        moonDiv.classList.add('moonDiv');
+        headline.classList.remove('centerText');
+        mainMessage.classList.remove('centerText');
+        sizes.width = moonDiv.offsetWidth;
+        sizes.height = moonDiv.offsetHeight;
+        createNewMoon(7);
+    }
+};
+
+const z = window.matchMedia("(max-width: 62rem)");
+checkMoon_layout(z); //check if the width is matching the page width at initial page load
+z.addEventListener('change', checkMoon_layout);

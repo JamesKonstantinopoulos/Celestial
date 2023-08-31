@@ -6,7 +6,7 @@
     <title>Celestial</title>
     <link rel="icon" type="image/x-icon" href="imgs/favicon.png">
     <link rel="stylesheet" href="celestial.css">
-    <script defer src="celestial.js"></script>
+    <script defer type="module" src="celestial.js"></script>
 </head>
 <body>
     <header class="header">
@@ -32,7 +32,8 @@
         </nav>
         <div class="introDiv">
             <div class="moonDiv">
-                <img src="imgs/moon.png" alt="moon">
+                <canvas class="webgl"></canvas>
+                <!-- <img src="imgs/moon.png" alt="moon"> -->
             </div>
             <div class="messageDiv">
                 <div class="headline">
@@ -42,7 +43,7 @@
                 </div>
                 <div class="mainMessage">
                     <span id="headline-line2">
-                        Get a chance to make the journey of your life with <i>Celestial</i>...possible
+                        Get a chance to make the journey of your life with <i>Celestial</i>... possible
                     </span>
                 </div>
             </div>
