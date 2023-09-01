@@ -35,6 +35,125 @@ body{
     background-color: hsla(0, 0%, 0%, 0.5);
 }
 
+/* loader start */
+
+.loading-screen{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: #272727;
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform .75s;
+}
+
+.loader{
+    display: flex;
+    position: relative;
+}
+
+.rocket{
+    position: absolute;
+    inset: 30px;
+    z-index: 10;
+    border-radius: 50%;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: rgb(0, 0, 0);
+}
+
+.rocket .fa-rocket{
+    position: absolute;
+    top: 35%;
+    color: rgb(255, 255, 255);
+    font-size: 3.5rem;
+    -webkit-text-stroke: 2px #000;
+    animation: rocketLaunch 0.2s linear infinite;
+}
+
+@keyframes rocketLaunch{
+    0%, 100%{
+        transform: translate(0, 0) rotate(-45deg);
+    }
+    50%{
+        transform: translate(0, 5px) rotate(-45deg);
+    }
+}
+
+.rocket .fa-star{
+    position: absolute;
+    top: calc(45px * var(--i));
+    left: calc(45px * var(--i));
+    font-size: 2rem;
+    color: #fbff00;
+    -webkit-text-stroke: 2px #000;
+    animation: cloudFloat 1.2s linear infinite;
+    animation-delay: calc(-0.5s * var(--i));
+}
+
+@keyframes cloudFloat{
+    0%{
+        transform: translateY(-175px);
+    }
+    100%{
+        transform: translateY(175px);
+    }
+}
+
+.loader span{
+    position: relative;
+    width: 250px;
+    height: 250px;
+    background-color: #eaeaf0;
+    border: 5px solid #eaeaf0;
+    border-radius: 50%;
+    box-shadow: 2px -8px 15px rgb(0, 0, 0), 2px 2px 10px rgb(0, 0, 0);
+}
+
+.loader span::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+
+.loader span::after{
+    content: "";
+    position: absolute;
+    inset: 20px;
+    background-color: #eaeaf0;
+    border: 3px solid #eaeaf0;
+    border-radius: 50%;
+    box-shadow: inset 3px 3px 10px rgba(0, 0, 0, 0.3), inset -1px -1px 15px #fff;
+}
+
+.loader span i{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(pink, rgb(42, 42, 226));
+    border-radius: 50%;
+    animation: rotateLoader 1.5s linear infinite;
+}
+
+@keyframes rotateLoader{
+    0%{
+        transform: rotate(0deg);
+    }
+
+    100%{
+        transform: rotate(360deg);
+    }
+}
+/* loader end */
+
+.loading-screen-hide{
+    transform: translateX(100%);
+}
+
 .header{
     position: relative;
     display: flex;

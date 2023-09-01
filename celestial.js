@@ -387,3 +387,11 @@ const setupMediaListeners = function(){
 };
 
 setupMediaListeners();
+
+//Remove loading screen when content ready
+
+const manager = new THREE.LoadingManager();
+
+manager.onLoad = function(){
+    console.log(moon);
+}
