@@ -21,11 +21,51 @@ const overlay = document.querySelector('.overlay');
 const popup = document.querySelector('.popup');
 const closePopupBtn = document.querySelector('.closePopupBtn');
 const sections = document.querySelectorAll('.section');
-const ticket_tabs_container = document.querySelector('.ticketsContent')
+const ticket_tabs_container = document.querySelector('.ticketsContent');
 const ticket_tabs = document.querySelectorAll('.tickets_tab');
 const lazy_imgs = document.querySelectorAll('img[data-src]');
 const footer_items = document.querySelector('.footer_items');
 const exploreContent = document.querySelector('.exploreContent');
+
+//Autotyped text in loader
+const sentences = ['Filling up rocket tank...', 
+                   'Setting up space gps...', 
+                   'Boarding all passengers...',
+                   'Taking selfie before take off...',
+                   'Checking for aliens...'
+                  ];
+
+let wordIndex = 0;
+let letterIndex = 0;
+let isErasing = false;
+
+const typedWord = document.querySelector('.typing-text .typed-word');
+const reflectionWord = document.querySelector('.reflection-text .typed-word');
+
+function type() {
+    if (isErasing)
+        letterIndex--;
+    else
+        letterIndex++;
+
+    typedWord.textContent = sentences[wordIndex].slice(0, letterIndex);
+    reflectionWord.textContent = sentences[wordIndex].slice(0, letterIndex);
+
+    const word = sentences[wordIndex];
+
+    if (!isErasing && letterIndex === word.length) {
+        isErasing = true;
+        setTimeout(type, 1000);
+    } else if (isErasing && letterIndex === 0) {
+        isErasing = false;
+        wordIndex = (wordIndex + 1) % sentences.length;
+        setTimeout(type, 500);
+    } else {
+        setTimeout(type, isErasing ? 100 : 100);
+    }
+}
+
+type();
 
 //Store the initial order since its gonna be changing with width
 const initialChildOrder = Array.from(exploreContent.children);

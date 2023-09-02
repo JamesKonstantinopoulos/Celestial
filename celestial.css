@@ -44,6 +44,8 @@ body{
     background-image: linear-gradient(to right top, #000000, #100e0f, #1a1819, #222023, #2a292d, #2d2d32, #2f3138, #31353d, #2f343f, #2c3341, #293342, #263244);
     z-index: 999999;
     display: flex;
+    flex-direction: column;
+    gap: 2rem;
     justify-content: center;
     align-items: center;
     transition: transform .75s;
@@ -53,6 +55,7 @@ body{
     transform: translateY(-100%);
 }
 
+/* Loader section */
 .loader{
     display: flex;
     position: relative;
@@ -152,6 +155,57 @@ body{
         transform: rotate(360deg);
     }
 }
+
+/* Autotyped text section */
+.typing-container {
+    display: flex;
+    height: 100px;
+    flex-direction: column;
+    overflow: hidden;
+    color: #cfcfcf;
+    font-size: 3rem;
+  }
+  
+  .typed-word {
+    border-right: 2px solid #cfcfcf;
+    padding-right: 5px;
+    margin-right: 2px;
+    animation: typing 2s steps(20) forwards, erasing 2s steps(20) 2s forwards, blinkCursor 0.5s infinite;
+  }
+  
+  .reflection-text {
+    transform: scaleY(-1);
+    opacity: 0.5;
+    margin-bottom: -20px;
+    mask-image: linear-gradient(transparent 30%, white 90%);
+  }
+  
+  @keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+  }
+  
+  @keyframes erasing {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
+  }
+  
+  @keyframes blinkCursor {
+    0%, 100% {
+        border-right-color: transparent;
+    }
+    50% {
+        border-right-color: #c5c5c5;
+    }
+  }
 /* loader end */
 
 .header{
@@ -908,6 +962,10 @@ body{
 }
 
 @media (max-width: 44em){
+    .typing-container{
+        font-size: 2.4rem;
+    }
+
     .testimonialSlider{
         margin-top: -4rem;
     }
@@ -930,6 +988,10 @@ body{
 }
 
 @media (max-width: 37em){
+    .typing-container{
+        font-size: 2rem;
+    }
+
     .messageDiv-extended{
         padding-inline: 0.5rem;
     }
@@ -993,6 +1055,9 @@ body{
 }
 
 @media (max-width: 29em){
+    .typing-container{
+        font-size: 1.6rem;
+    }
 
     .tickets_tab-content--back p{
         margin-block: 1rem;
