@@ -2,6 +2,7 @@
 
 import * as THREE from '/node_modules/three/build/three.module.js';
 
+const loadingScreen = document.querySelector('.loading-screen');
 const header = document.querySelector('.header');
 const menuBtn = document.querySelector('.menu-btn');
 const nav = document.querySelector('.nav');
@@ -266,132 +267,138 @@ initialChildOrder.forEach(child => bringImgObserver.observe(child));
 
 // Adding 3d rotating moon via three.js library
 
-//Change moon size depending on screen width
+// Giving more time for the preloading screen to load first
+setTimeout(loadMoon, 5000);
 
-const createNewMoon = function(diameter){
-    return new THREE.Mesh(
-        new THREE.SphereGeometry(diameter, 64, 64),
-        new THREE.MeshStandardMaterial({
-            map: moonTexture
-        })
-    );
-}
+function loadMoon(){
+    //Change moon size depending on screen width
 
-//Scene
-const scene = new THREE.Scene();
-
-//Moon
-const moonTexture = new THREE.TextureLoader().load('imgs/3Dmoon.jpg');
-let moon = createNewMoon(7);
-scene.add(moon);
-
-//sizes
-const sizes = {
-  width: moonDiv.offsetWidth,
-  height: moonDiv.offsetHeight
-};
-
-// Light
-const light = new THREE.PointLight(0xffffff, 1000, 100);
-light.position.set(5, 5, 40);
-scene.add(light);
-
-// Camera
-const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height);
-camera.position.z = 20;
-scene.add(camera);
-
-//Renderer
-const canvas = document.querySelector('.webgl');
-const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true});
-
-renderer.setSize(sizes.width, sizes.height);
-renderer.shadowMap.enabled = true;
-renderer.gammaOutput = true;
-renderer.render(scene, camera);
-
-const resizeHandler = function(){
-    sizes.width = moonDiv.offsetWidth;
-    sizes.height = moonDiv.offsetHeight;
-    //Update Camera
-    camera.aspect = sizes.width / sizes.height;
-    camera.updateProjectionMatrix();
-    //Update Renderer
-    renderer.setSize(sizes.width, sizes.height);
-};
-
-window.addEventListener('resize', resizeHandler);
-
-//Animation loop
-const rotationAxis = new THREE.Vector3(0.4, -1, 0).normalize(); 
-const quaternion = new THREE.Quaternion();
-
-const animate = () =>{
-  quaternion.setFromAxisAngle(rotationAxis, 0.0005);
-  moon.quaternion.multiplyQuaternions(quaternion, moon.quaternion);
-  renderer.render(scene, camera);
-  window.requestAnimationFrame(animate);
-};
-
-animate();
-
-const shrinkMoonSizes = new Map([[87, 6], [66, 5], [62, 7], [40, 6], [34, 5], [28, 4]]);
-const expandMoonSizes = new Map([[87, 7], [66, 6], [62, 5], [40, 7], [34, 6], [28, 5]]);
-
-function handleMoonSize(media, diameter){
-    scene.remove(moon);
-    if(media.matches)
-        moon = createNewMoon(diameter);
-    scene.add(moon);
-};
-
-function checkMoon_layout(media){
-    if(media.matches){
-        messageDiv.classList.remove('messageDiv');
-        messageDiv.classList.add('messageDiv-extended');
-        moonDiv.classList.remove('moonDiv');
-        moonDiv.classList.add('moonDiv-extended');
-        headline.classList.add('centerText');
-        mainMessage.classList.add('centerText');
-        sizes.width = canvas.parentElement.offsetWidth;
-        sizes.height = canvas.parentElement.offsetHeight;
-        resizeHandler();
+    const createNewMoon = function(diameter){
+        return new THREE.Mesh(
+            new THREE.SphereGeometry(diameter, 64, 64),
+            new THREE.MeshStandardMaterial({
+                map: moonTexture
+            })
+        );
     }
-    else{
-        messageDiv.classList.remove('messageDiv-extended');
-        messageDiv.classList.add('messageDiv');
-        moonDiv.classList.remove('moonDiv-extended');
-        moonDiv.classList.add('moonDiv');
-        headline.classList.remove('centerText');
-        mainMessage.classList.remove('centerText');
+
+    //Scene
+    const scene = new THREE.Scene();
+
+    //Loading manager to remove the preloading screen when moon fully loads
+    const loadingManager = new THREE.LoadingManager();
+
+    const onMoonTextureLoad = function(){
+        loadingScreen.classList.add('loading-screen-hide');
+    }
+
+    loadingManager.onLoad = onMoonTextureLoad;
+
+    //Moon
+    const moonTexture = new THREE.TextureLoader(loadingManager).load('imgs/3Dmoon.jpg');
+    let moon = createNewMoon(7);
+    scene.add(moon);
+
+    //sizes
+    const sizes = {
+        width: moonDiv.offsetWidth,
+        height: moonDiv.offsetHeight
+    };
+
+    // Light
+    const light = new THREE.PointLight(0xffffff, 1000, 100);
+    light.position.set(5, 5, 40);
+    scene.add(light);
+
+    // Camera
+    const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height);
+    camera.position.z = 20;
+    scene.add(camera);
+
+    //Renderer
+    const canvas = document.querySelector('.webgl');
+    const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true});
+
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.shadowMap.enabled = true;
+    renderer.gammaOutput = true;
+    renderer.render(scene, camera);
+
+    const resizeHandler = function(){
         sizes.width = moonDiv.offsetWidth;
         sizes.height = moonDiv.offsetHeight;
-    }
-};
+        //Update Camera
+        camera.aspect = sizes.width / sizes.height;
+        camera.updateProjectionMatrix();
+        //Update Renderer
+        renderer.setSize(sizes.width, sizes.height);
+    };
 
-const setupMediaListeners = function(){
-    shrinkMoonSizes.forEach((diameter, maxWidth) => {
-        const sizeMedia = window.matchMedia(`(max-width: ${maxWidth}rem)`);
-        handleMoonSize(sizeMedia, diameter);
-        sizeMedia.addEventListener('change', () => handleMoonSize(sizeMedia, diameter));
-    });
+    window.addEventListener('resize', resizeHandler);
 
-    expandMoonSizes.forEach((diameter, minWidth) => {
-        const sizeMedia = window.matchMedia(`(min-width: ${minWidth}rem)`);
-        sizeMedia.addEventListener('change', () => handleMoonSize(sizeMedia, diameter));
-    });
+    //Animation loop
+    const rotationAxis = new THREE.Vector3(0.4, -1, 0).normalize(); 
+    const quaternion = new THREE.Quaternion();
 
-    const layoutMedia = window.matchMedia("(max-width: 62rem)");
-    checkMoon_layout(layoutMedia); //check if the width is matching the page width at initial page load
-    layoutMedia.addEventListener('change', checkMoon_layout);
-};
+    const animate = () =>{
+        quaternion.setFromAxisAngle(rotationAxis, 0.0005);
+        moon.quaternion.multiplyQuaternions(quaternion, moon.quaternion);
+        renderer.render(scene, camera);
+        window.requestAnimationFrame(animate);
+    };
 
-setupMediaListeners();
+    animate();
 
-//Remove loading screen when content ready
+    const shrinkMoonSizes = new Map([[87, 6], [66, 5], [62, 7], [40, 6], [34, 5], [28, 4]]);
+    const expandMoonSizes = new Map([[87, 7], [66, 6], [62, 5], [40, 7], [34, 6], [28, 5]]);
 
-const manager = new THREE.LoadingManager();
+    function handleMoonSize(media, diameter){
+        scene.remove(moon);
+        if(media.matches)
+            moon = createNewMoon(diameter);
+        scene.add(moon);
+    };
 
-manager.onLoad = function(){
-    console.log(moon);
+    function checkMoon_layout(media){
+        if(media.matches){
+            messageDiv.classList.remove('messageDiv');
+            messageDiv.classList.add('messageDiv-extended');
+            moonDiv.classList.remove('moonDiv');
+            moonDiv.classList.add('moonDiv-extended');
+            headline.classList.add('centerText');
+            mainMessage.classList.add('centerText');
+            sizes.width = canvas.parentElement.offsetWidth;
+            sizes.height = canvas.parentElement.offsetHeight;
+            resizeHandler();
+        }
+        else{
+            messageDiv.classList.remove('messageDiv-extended');
+            messageDiv.classList.add('messageDiv');
+            moonDiv.classList.remove('moonDiv-extended');
+            moonDiv.classList.add('moonDiv');
+            headline.classList.remove('centerText');
+            mainMessage.classList.remove('centerText');
+            sizes.width = moonDiv.offsetWidth;
+            sizes.height = moonDiv.offsetHeight;
+        }
+    };
+
+    const setupMediaListeners = function(){
+        shrinkMoonSizes.forEach((diameter, maxWidth) => {
+            const sizeMedia = window.matchMedia(`(max-width: ${maxWidth}rem)`);
+            handleMoonSize(sizeMedia, diameter);
+            sizeMedia.addEventListener('change', () => handleMoonSize(sizeMedia, diameter));
+        });
+
+        expandMoonSizes.forEach((diameter, minWidth) => {
+            const sizeMedia = window.matchMedia(`(min-width: ${minWidth}rem)`);
+            sizeMedia.addEventListener('change', () => handleMoonSize(sizeMedia, diameter));
+        });
+
+        const layoutMedia = window.matchMedia("(max-width: 62rem)");
+        checkMoon_layout(layoutMedia); //check if the width is matching the page width at initial page load
+        layoutMedia.addEventListener('change', checkMoon_layout);
+    };
+
+    setupMediaListeners();
 }

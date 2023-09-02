@@ -41,12 +41,16 @@ body{
     position: fixed;
     width: 100%;
     height: 100%;
-    background-color: #272727;
+    background-image: linear-gradient(to right top, #000000, #100e0f, #1a1819, #222023, #2a292d, #2d2d32, #2f3138, #31353d, #2f343f, #2c3341, #293342, #263244);
     z-index: 999999;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: transform .75s;
+}
+
+.loading-screen-hide{
+    transform: translateY(-100%);
 }
 
 .loader{
@@ -56,7 +60,7 @@ body{
 
 .rocket{
     position: absolute;
-    inset: 30px;
+    inset: 40px;
     z-index: 10;
     border-radius: 50%;
     display:flex;
@@ -106,10 +110,10 @@ body{
 
 .loader span{
     position: relative;
-    width: 250px;
-    height: 250px;
-    background-color: #eaeaf0;
-    border: 5px solid #eaeaf0;
+    width: 300px;
+    height: 300px;
+    background-color: #100e0f;
+    border: 5px solid #100e0f;
     border-radius: 50%;
     box-shadow: 2px -8px 15px rgb(0, 0, 0), 2px 2px 10px rgb(0, 0, 0);
 }
@@ -124,17 +128,17 @@ body{
 .loader span::after{
     content: "";
     position: absolute;
-    inset: 20px;
-    background-color: #eaeaf0;
-    border: 3px solid #eaeaf0;
+    inset: 30px;
+    background-color: #100e0f;
+    border: 3px solid #100e0f;
     border-radius: 50%;
-    box-shadow: inset 3px 3px 10px rgba(0, 0, 0, 0.3), inset -1px -1px 15px #fff;
+    box-shadow: inset 3px 3px 10px rgba(0, 0, 0, 0.3), inset -1px -1px 15px #100e0f;
 }
 
 .loader span i{
     position: absolute;
     inset: 0;
-    background: linear-gradient(pink, rgb(42, 42, 226));
+    background: linear-gradient(#000000, #100e0f, #1a1819, #222023, #2a292d, #2d2d32, #2f3138, #31353d, #2f343f, #2c3341, #293342, #263244);
     border-radius: 50%;
     animation: rotateLoader 1.5s linear infinite;
 }
@@ -149,10 +153,6 @@ body{
     }
 }
 /* loader end */
-
-.loading-screen-hide{
-    transform: translateX(100%);
-}
 
 .header{
     position: relative;
