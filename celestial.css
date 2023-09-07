@@ -226,12 +226,11 @@ body{
     width: 100%;
     position: absolute;
     height: clamp(4.4rem, 11vh, 7rem);
-    background-color: black;
     display: flex;
     align-items: center;
     justify-content: end;
     flex-shrink: 0;
-    background: hsla(0, 0%, 0%, 0.6);
+    background: hsla(0, 0%, 3%, 0.6);
     z-index: 9999;
 }
 
