@@ -28,44 +28,44 @@ const footer_items = document.querySelector('.footer_items');
 const exploreContent = document.querySelector('.exploreContent');
 
 //Autotyped text in loader
-const sentences = ['Filling up rocket tank...', 
-                   'Setting up space gps...', 
-                   'Boarding all passengers...',
-                   'Taking selfie before take off...',
-                   'Checking for aliens...'
-                  ];
+// const sentences = ['Filling up rocket tank...', 
+//                    'Setting up space gps...', 
+//                    'Boarding all passengers...',
+//                    'Taking selfie before take off...',
+//                    'Checking for aliens...'
+//                   ];
 
-let wordIndex = 0;
-let letterIndex = 0;
-let isErasing = false;
+// let wordIndex = 0;
+// let letterIndex = 0;
+// let isErasing = false;
 
-const typedWord = document.querySelector('.typing-text .typed-word');
-const reflectionWord = document.querySelector('.reflection-text .typed-word');
+// const typedWord = document.querySelector('.typing-text .typed-word');
+// const reflectionWord = document.querySelector('.reflection-text .typed-word');
 
-function type() {
-    if (isErasing)
-        letterIndex--;
-    else
-        letterIndex++;
+// function type() {
+//     if (isErasing)
+//         letterIndex--;
+//     else
+//         letterIndex++;
 
-    typedWord.textContent = sentences[wordIndex].slice(0, letterIndex);
-    reflectionWord.textContent = sentences[wordIndex].slice(0, letterIndex);
+//     typedWord.textContent = sentences[wordIndex].slice(0, letterIndex);
+//     reflectionWord.textContent = sentences[wordIndex].slice(0, letterIndex);
 
-    const word = sentences[wordIndex];
+//     const word = sentences[wordIndex];
 
-    if (!isErasing && letterIndex === word.length) {
-        isErasing = true;
-        setTimeout(type, 1000);
-    } else if (isErasing && letterIndex === 0) {
-        isErasing = false;
-        wordIndex = (wordIndex + 1) % sentences.length;
-        setTimeout(type, 500);
-    } else {
-        setTimeout(type, isErasing ? 100 : 100);
-    }
-}
+//     if (!isErasing && letterIndex === word.length) {
+//         isErasing = true;
+//         setTimeout(type, 1000);
+//     } else if (isErasing && letterIndex === 0) {
+//         isErasing = false;
+//         wordIndex = (wordIndex + 1) % sentences.length;
+//         setTimeout(type, 500);
+//     } else {
+//         setTimeout(type, isErasing ? 100 : 100);
+//     }
+// }
 
-type();
+// type();
 
 //Store the initial order since its gonna be changing with width
 const initialChildOrder = Array.from(exploreContent.children);
